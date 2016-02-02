@@ -1,0 +1,13 @@
+openmrs-refapp-tomcat:
+  build: tomcat
+  ports:
+    - "8080:8080"
+    - "5000:5000"
+  container_name: openmrs-refapp-tomcat
+  links:
+    - openmrs-refapp-mysql
+openmrs-refapp-mysql:
+  build: mysql
+  ports:
+    - "3306:3306"
+  container_name: openmrs-refapp-mysql
