@@ -69,10 +69,11 @@ Start by cloning this repository:
 git clone https://github.com/psbrandt/openmrs-refapp-docker.git
 ````
 
-Enter the directory and build the images:
+Enter the directory, check out the `alpine` branch and build the images:
 
 ````
 cd openmrs-refapp-docker
+git checkout alpine
 docker-compose build
 ````
 
@@ -105,6 +106,13 @@ stop the containers and restart them:
 ````
 docker-compose stop
 docker-compose start
+````
+
+Or if you are using the prebuilt images:
+
+````
+docker-compose -f docker-compose-prebuilt.yml stop
+docker-compose -f docker-compose-prebuilt.yml start
 ````
 
 ## License
