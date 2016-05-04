@@ -1,12 +1,19 @@
-FROM mysql:5.6
+FROM alpine:3.3
 
-ENV MYSQL_ROOT_PASSWORD=root
-ENV MYSQL_DATABASE=openmrs
-ENV MYSQL_USER=openmrs
-ENV MYSQL_PASSWORD=openmrs
+MAINTAINER Pascal Brandt <pascal@openmrs.org>
 
-RUN apt-get update && apt-get install -y curl unzip; \
-    curl -L http://sourceforge.net/projects/openmrs-refapp-docker/files/v2.3.1/openmrs-refapp-database.sql.zip/download \
-         -o /tmp/openmrs-refapp-database.sql.zip; \
-    unzip /tmp/openmrs-refapp-database.sql.zip -d /docker-entrypoint-initdb.d; \
-    rm /tmp/openmrs-refapp-database.sql.zip
+ENV MYSQL_ROOT_PASSWORD=root \
+    MYSQL_DATABASE=openmrs \
+    MYSQL_USER=openmrs \
+    MYSQL_PASSWORD=openmrs
+
+RUN apk add --update mariadb curl; \
+    curl -L http://bintray.com/psbrandt/generic/download_file\?file_path\=openmrs-refapp-database-2.3.1.sql.gz \
+         -o /tmp/openmrs-refapp-database-2.3.1.sql.gz; \
+    apk del curl && rm -f /var/cache/apk/*
+
+COPY run.sh /run.sh
+
+EXPOSE 3306
+
+CMD ["/run.sh"]

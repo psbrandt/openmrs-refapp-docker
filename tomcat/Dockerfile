@@ -1,14 +1,32 @@
-FROM tomcat:7
+FROM alpine:3.3
 
-ADD openmrs-runtime.properties /usr/local/tomcat/openmrs-runtime.properties
-ADD setenv.sh /usr/local/tomcat/bin/setenv.sh
+MAINTAINER Pascal Brandt <pascal@openmrs.org>
 
-RUN apt-get update && apt-get install -y curl unzip; \
-    curl -L http://sourceforge.net/projects/openmrs/files/releases/OpenMRS_Platform_1.11.5/openmrs.war/download \
-         -o /usr/local/tomcat/webapps/openmrs.war; \
-    mkdir -p /usr/local/tomcat/.OpenMRS/modules; \
-    curl -L http://sourceforge.net/projects/openmrs/files/releases/OpenMRS_2.3.1/openmrs-2.3.1-modules.zip/download \
-         -o /tmp/openmrs-2.3.1-modules.zip; \
-    unzip /tmp/openmrs-2.3.1-modules.zip -d /tmp; \
-    mv /tmp/openmrs-2.3.1-modules/*.omod /usr/local/tomcat/.OpenMRS/modules; \
-    rm -rf /tmp/openmrs-2.3.1-modules*;
+ENV TOMCAT_MAJOR=7 \
+    TOMCAT_VERSION=7.0.69 \
+    TOMCAT_HOME=/etc/tomcat \
+    CATALINA_HOME=/etc/tomcat \
+    OPENMRS_HOME=/root/.OpenMRS
+
+RUN apk add --update openjdk7 curl; \
+    curl -L http://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_MAJOR}/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz \
+      -o /tmp/apache-tomcat-${TOMCAT_VERSION}.tar.gz; \
+    tar -zxvf /tmp/apache-tomcat-${TOMCAT_VERSION}.tar.gz -C /etc; \
+    ln -s /etc/apache-tomcat-${TOMCAT_VERSION} ${TOMCAT_HOME}; \
+    rm -f /tmp/apache-tomcat-${TOMCAT_VERSION}.tar.gz; \
+    rm -rf ${TOMCAT_HOME}/webapps/*; \
+    curl -L https://bintray.com/psbrandt/generic/download_file?file_path=openmrs-1.11.5.war \
+      -o ${TOMCAT_HOME}/webapps/openmrs.war; \
+    curl -L https://bintray.com/psbrandt/generic/download_file?file_path=openmrs-2.3.1-modules.tgz \
+      -o /tmp/openmrs-2.3.1-modules.tgz; \
+    mkdir -p ${OPENMRS_HOME}/modules; \
+    tar -zxvf /tmp/openmrs-2.3.1-modules.tgz -C ${OPENMRS_HOME}/modules; \
+    rm -f /tmp/openmrs-2.3.1-modules.tgz; \
+    apk del curl && rm -f /var/cache/apk/*
+
+COPY openmrs-runtime.properties ${OPENMRS_HOME}/openmrs-runtime.properties
+COPY setenv.sh ${TOMCAT_HOME}/bin/setenv.sh
+
+EXPOSE 8080
+
+CMD ${TOMCAT_HOME}/bin/catalina.sh run
