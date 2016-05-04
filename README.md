@@ -1,3 +1,12 @@
+# :warning: This repo is DEPRECATED :warning:
+
+Please see one of the following repos instead:
+
+* [OpenMRS Reference Application on Alpine Linux](https://github.com/psbrandt/openmrs-contrib-refappdockeralpine)
+* [OpenMRS Reference Application on Debian Linux](https://github.com/psbrandt/openmrs-contrib-refappdockerdebian)
+
+-----
+
 <img src="https://cloud.githubusercontent.com/assets/668093/12567089/0ac42774-c372-11e5-97eb-00baf0fccc37.jpg" alt="OpenMRS"/>
 
 # OpenMRS Reference Application Docker (Debian Linux)
