@@ -1,10 +1,14 @@
 sudo: required
+branches:
+  only:
+    - master
+    - alpine
 services:
-- docker
+  - docker
 script:
-- docker-compose build
+  - docker-compose build
 after_script:
-- docker images
+  - docker images
 deploy:
   provider: script
   script: scripts/deploy.sh
